@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Network Dashboard</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; }
+    table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+    th { background: #333; color: white; }
+    tr:nth-child(even) { background: #eee; }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">📡 Network Device Dashboard</h2>
+  <table id="devices">
+    <thead>
+      <tr><th>IP Address</th><th>MAC Address</th><th>Vendor</th></tr>
+    </thead>
+    <tbody>
+      {% for ip, data in devices.items() %}
+        <tr>
+          <td>{{ ip }}</td>
+          <td>{{ data.mac }}</td>
+          <td>{{ data.vendor }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    var socket = io();
+    function updateTable(devices) {
+      let tbody = document.querySelector("#devices tbody");
+      tbody.innerHTML = "";
+      for (const [ip, info] of Object.entries(devices)) {
+        let row = document.createElement("tr");
+        row.innerHTML = `<td>${ip}</td><td>${info.mac}</td><td>${info.vendor}</td>`;
+        tbody.appendChild(row);
+      }
+    }
+
+    socket.on("update_devices", function(devices) {
+      updateTable(devices);
+    });
+  </script>
+</body>
+</html>

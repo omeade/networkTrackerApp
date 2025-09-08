@@ -30,10 +30,10 @@ def lookup_vendor(mac):
     return vendors.get(prefix,"Unkown")
 
 def scan_network():
-    ip_range = "192.168.0.0/24"  # change if your subnet differs
+    ip_range = "192.168.0.0/24" 
     devices = {}
 
-    # Ping all IPs in the subnet to force ARP replies
+   
     for i in range(1, 255):
         ip = f"192.168.0.{i}"
         subprocess.call(
@@ -42,7 +42,7 @@ def scan_network():
             stderr=subprocess.DEVNULL
         )
 
-    # ARP scan
+
     arp_request = ARP(pdst=ip_range)
     broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
     packet = broadcast / arp_request
@@ -62,7 +62,7 @@ def network_scanner():
         devices = scan_network()
         current_devices = devices
         socketio.emit("update_devices", devices)
-        time.sleep(1)  # scan every 10 seconds
+        time.sleep(1) 
 @app.route("/")
 def index():
     return render_template("index.html",devices=current_devices)
